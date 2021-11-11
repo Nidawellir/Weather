@@ -15,9 +15,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         let window = UIWindow(frame: UIScreen.main.bounds)
         let generalDayViewController = GeneralDayViewController()
+        let navigationController = UINavigationController(rootViewController: generalDayViewController)
         
         self.window = window
-        self.window?.rootViewController = generalDayViewController
+        self.window?.rootViewController = navigationController
         self.window?.makeKeyAndVisible()
         
         return true
