@@ -12,6 +12,9 @@
 		D959848D273C1E3A006F07DF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = D959848B273C1E3A006F07DF /* LaunchScreen.storyboard */; };
 		D95984A0273C26AC006F07DF /* GeneralDayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D959849F273C26AC006F07DF /* GeneralDayView.swift */; };
 		D95984A3273C26DA006F07DF /* GeneralDayViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D95984A2273C26DA006F07DF /* GeneralDayViewController.swift */; };
+		D978EC3B273EBB87009F6BE6 /* BaseViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D978EC3A273EBB87009F6BE6 /* BaseViewController.swift */; };
+		D978EC3F273ECC20009F6BE6 /* BarButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = D978EC3E273ECC20009F6BE6 /* BarButton.swift */; };
+		D978EC42273ECC8D009F6BE6 /* BarButtonItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = D978EC41273ECC8D009F6BE6 /* BarButtonItem.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +25,9 @@
 		D959848E273C1E3A006F07DF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		D959849F273C26AC006F07DF /* GeneralDayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralDayView.swift; sourceTree = "<group>"; };
 		D95984A2273C26DA006F07DF /* GeneralDayViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeneralDayViewController.swift; sourceTree = "<group>"; };
+		D978EC3A273EBB87009F6BE6 /* BaseViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BaseViewController.swift; sourceTree = "<group>"; };
+		D978EC3E273ECC20009F6BE6 /* BarButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarButton.swift; sourceTree = "<group>"; };
+		D978EC41273ECC8D009F6BE6 /* BarButtonItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarButtonItem.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -54,6 +60,9 @@
 		D959847F273C1E39006F07DF /* WeatherApp */ = {
 			isa = PBXGroup;
 			children = (
+				D978EC37273EBA9E009F6BE6 /* Data */,
+				D978EC36273EBA92009F6BE6 /* Domain */,
+				D978EC35273EB9D8009F6BE6 /* Library */,
 				D9598499273C264A006F07DF /* Modules */,
 				D9598480273C1E39006F07DF /* AppDelegate.swift */,
 				D9598489273C1E3A006F07DF /* Assets.xcassets */,
@@ -66,6 +75,7 @@
 		D9598499273C264A006F07DF /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				D978EC39273EBB30009F6BE6 /* Common */,
 				D959849A273C2665006F07DF /* GeneralDay */,
 			);
 			path = Modules;
@@ -78,6 +88,53 @@
 				D95984A2273C26DA006F07DF /* GeneralDayViewController.swift */,
 			);
 			path = GeneralDay;
+			sourceTree = "<group>";
+		};
+		D978EC35273EB9D8009F6BE6 /* Library */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Library;
+			sourceTree = "<group>";
+		};
+		D978EC36273EBA92009F6BE6 /* Domain */ = {
+			isa = PBXGroup;
+			children = (
+				D978EC38273EBABB009F6BE6 /* Entities */,
+			);
+			path = Domain;
+			sourceTree = "<group>";
+		};
+		D978EC37273EBA9E009F6BE6 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		D978EC38273EBABB009F6BE6 /* Entities */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Entities;
+			sourceTree = "<group>";
+		};
+		D978EC39273EBB30009F6BE6 /* Common */ = {
+			isa = PBXGroup;
+			children = (
+				D978EC3A273EBB87009F6BE6 /* BaseViewController.swift */,
+				D978EC3D273ECBEC009F6BE6 /* BarButton */,
+			);
+			path = Common;
+			sourceTree = "<group>";
+		};
+		D978EC3D273ECBEC009F6BE6 /* BarButton */ = {
+			isa = PBXGroup;
+			children = (
+				D978EC3E273ECC20009F6BE6 /* BarButton.swift */,
+				D978EC41273ECC8D009F6BE6 /* BarButtonItem.swift */,
+			);
+			path = BarButton;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -149,9 +206,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D978EC42273ECC8D009F6BE6 /* BarButtonItem.swift in Sources */,
 				D9598481273C1E39006F07DF /* AppDelegate.swift in Sources */,
+				D978EC3B273EBB87009F6BE6 /* BaseViewController.swift in Sources */,
 				D95984A3273C26DA006F07DF /* GeneralDayViewController.swift in Sources */,
 				D95984A0273C26AC006F07DF /* GeneralDayView.swift in Sources */,
+				D978EC3F273ECC20009F6BE6 /* BarButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
