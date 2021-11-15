@@ -9,24 +9,20 @@ import UIKit
 
 final class GeneralDayView: UIView {
     
+    // MARK: - Private properties
+    
+    private let currenWeatherTableViewCellIdentifier = "currenWeatherTableViewCellIdentifier"
+    private let dailyWeatherTableViewCellIdentifier = "dailyWeatherTableViewCellIdentifier"
+    
     // MARK: - Views properties
     
-    private let roundedContainereView = UIView()
-    private let gradientView = UIView()
-    private let gradientlayer = CAGradientLayer()
-    private let intersectImageView = UIImageView(image: UIImage(named: "Intersect"))
-    private let stackView = UIStackView()
-    private let titleLabel = UILabel()
-    private let imageView = UIImageView()
-    private let temperatureLabel = UILabel()
-    private let descriptionLabel = UILabel()
-
+    private let tableView = UITableView()
+   
     // MARK: - Initialization
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        setupGradient()
         configureViews()
         configureLayouts()
     }
@@ -34,92 +30,62 @@ final class GeneralDayView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    // MARK: - Lifecycle methods
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-                
-        gradientlayer.frame = roundedContainereView.bounds
-    }
 }
     
 // MARK: - Private methods
     
 extension GeneralDayView {
     private func configureViews() {
-        backgroundColor = .white
+        backgroundColor = Asset.Colors.Common.white.color
         
-        roundedContainereView.clipsToBounds = true
-        roundedContainereView.layer.cornerRadius = 24
-        roundedContainereView.translatesAutoresizingMaskIntoConstraints = false
-
-        gradientView.translatesAutoresizingMaskIntoConstraints = false
-        
-        intersectImageView.translatesAutoresizingMaskIntoConstraints = false
-        
-        stackView.alignment = .center
-        stackView.axis = .vertical
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-
-        titleLabel.text = "Сегодня, 12 августа, чт"
-        titleLabel.textAlignment = .center
-        titleLabel.textColor = .white
-        titleLabel.font = UIFont.systemFont(ofSize: 14, weight: .medium)
-            
-        imageView.image = UIImage(named: "Sun")
-            
-        temperatureLabel.text = "30°"
-        temperatureLabel.textAlignment = .center
-        temperatureLabel.textColor = .white
-        temperatureLabel.font = UIFont.systemFont(ofSize: 48, weight: .medium)
-            
-        descriptionLabel.text = "Ясно, ощущается как 32°"
-        descriptionLabel.textAlignment = .center
-        descriptionLabel.textColor = .white
-        descriptionLabel.font = UIFont.systemFont(ofSize: 14, weight: .medium)
+        tableView.backgroundColor = Asset.Colors.Common.white.color
+        tableView.separatorStyle = .none
+        tableView.dataSource = self
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = 180
+        tableView.register(CurrenWeatherTableViewCell.self, forCellReuseIdentifier: currenWeatherTableViewCellIdentifier)
+        tableView.register(DailyWeatherTableViewCell.self, forCellReuseIdentifier: dailyWeatherTableViewCellIdentifier)
+        tableView.translatesAutoresizingMaskIntoConstraints = false
     }
     
     private func configureLayouts() {
-        addSubview(roundedContainereView)
-    
-        roundedContainereView.addSubview(gradientView)
-        roundedContainereView.addSubview(intersectImageView)
-        roundedContainereView.addSubview(stackView)
+        addSubview(tableView)
         
-        stackView.addArrangedSubview(titleLabel)
-        stackView.addArrangedSubview(imageView)
-        stackView.addArrangedSubview(temperatureLabel)
-        stackView.addArrangedSubview(descriptionLabel)
-            
         NSLayoutConstraint.activate([
-            roundedContainereView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor, constant: 4),
-            roundedContainereView.leftAnchor.constraint(equalTo: leftAnchor, constant: 16),
-            roundedContainereView.rightAnchor.constraint(equalTo: rightAnchor, constant: -16),
-            
-            gradientView.topAnchor.constraint(equalTo: roundedContainereView.topAnchor),
-            gradientView.bottomAnchor.constraint(equalTo: roundedContainereView.bottomAnchor),
-            gradientView.leftAnchor.constraint(equalTo: roundedContainereView.leftAnchor),
-            gradientView.rightAnchor.constraint(equalTo: roundedContainereView.rightAnchor),
-            
-            intersectImageView.bottomAnchor.constraint(equalTo: roundedContainereView.bottomAnchor),
-            intersectImageView.leftAnchor.constraint(equalTo: roundedContainereView.leftAnchor),
-            intersectImageView.rightAnchor.constraint(equalTo: roundedContainereView.rightAnchor),
-            
-            stackView.topAnchor.constraint(equalTo: roundedContainereView.topAnchor, constant: 16),
-            stackView.bottomAnchor.constraint(equalTo: roundedContainereView.bottomAnchor, constant: -24),
-            stackView.leftAnchor.constraint(equalTo: roundedContainereView.leftAnchor),
-            stackView.rightAnchor.constraint(equalTo: roundedContainereView.rightAnchor)
+            tableView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
+            tableView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            tableView.leftAnchor.constraint(equalTo: leftAnchor),
+            tableView.rightAnchor.constraint(equalTo: rightAnchor)
         ])
     }
+}
+
+// MARK: - UITableViewDataSource
+
+extension GeneralDayView: UITableViewDataSource {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 2
+    }
     
-    private func setupGradient() {
-        guard
-            let blueFirst = UIColor(named: "Colors/BlueFirst"),
-            let blueSecond = UIColor(named: "Colors/BlueSecond")
-        else { return }
-        
-        gradientView.layer.addSublayer(gradientlayer)
-        gradientlayer.colors = [blueFirst.cgColor, blueSecond.cgColor]
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        switch section {
+        case 0:
+            return 1
+        case 1:
+            return 10
+        default:
+            return 0
+        }
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        switch indexPath.section {
+        case 0:
+            return tableView.dequeueReusableCell(withIdentifier: currenWeatherTableViewCellIdentifier, for: indexPath)
+        case 1:
+            return tableView.dequeueReusableCell(withIdentifier: dailyWeatherTableViewCellIdentifier, for: indexPath) as! DailyWeatherTableViewCell
+        default:
+            return .init()
+        }
     }
 }

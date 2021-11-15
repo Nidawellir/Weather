@@ -9,19 +9,22 @@ import UIKit
 
 enum BarButtonItem {
     case location
-    case sun
+    case loader
     case search
+    case back
 }
 
 extension BarButtonItem {
     var image: UIImage {
         switch self {
         case .location:
-            return UIImage(named: "NavigationBarButtons/location") ?? UIImage()
-        case .sun:
-            return UIImage(named: "NavigationBarButtons/sun") ?? UIImage()
+            return Asset.Images.Common.location.image
+        case .loader:
+            return Asset.Images.Common.loader.image
         case .search:
-            return UIImage(named: "NavigationBarButtons/search") ?? UIImage()
+            return Asset.Images.Common.search.image
+        case .back:
+            return Asset.Images.Common.back.image
         }
     }
 }

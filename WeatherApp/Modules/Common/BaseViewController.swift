@@ -37,7 +37,7 @@ extension BaseViewController {
 
 extension BaseViewController {
     private func configureViews() {
-        view.backgroundColor = .white
+        view.backgroundColor = Asset.Colors.Common.white.color
     }
     
     private func configureNavigationBar() {

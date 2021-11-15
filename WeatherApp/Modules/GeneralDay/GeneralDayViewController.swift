@@ -25,6 +25,6 @@ final class GeneralDayViewController: BaseViewController {
         super.viewDidLoad()
     
         setLeft(barButtonItems: [.location])
-        setRight(barButtonItems: [.sun, .search])
+        setRight(barButtonItems: [.loader, .search])
     }
 }
