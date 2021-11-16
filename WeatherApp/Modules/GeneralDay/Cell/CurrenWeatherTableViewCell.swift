@@ -90,7 +90,7 @@ extension CurrenWeatherTableViewCell {
             
         NSLayoutConstraint.activate([
             roundedContainereView.topAnchor.constraint(equalTo: topAnchor),
-            roundedContainereView.bottomAnchor.constraint(equalTo: bottomAnchor),
+            roundedContainereView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16),
             roundedContainereView.leftAnchor.constraint(equalTo: leftAnchor, constant: 16),
             roundedContainereView.rightAnchor.constraint(equalTo: rightAnchor, constant: -16),
             

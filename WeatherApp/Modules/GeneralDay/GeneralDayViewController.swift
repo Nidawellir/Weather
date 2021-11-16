@@ -18,6 +18,7 @@ final class GeneralDayViewController: BaseViewController {
     override func loadView() {
         super.loadView()
         
+        title = "Томбов"
         view = generalDayView
     }
     

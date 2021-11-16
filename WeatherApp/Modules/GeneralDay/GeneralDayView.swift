@@ -43,6 +43,7 @@ extension GeneralDayView {
         tableView.dataSource = self
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = 180
+        tableView.showsVerticalScrollIndicator = false
         tableView.register(CurrenWeatherTableViewCell.self, forCellReuseIdentifier: currenWeatherTableViewCellIdentifier)
         tableView.register(DailyWeatherTableViewCell.self, forCellReuseIdentifier: dailyWeatherTableViewCellIdentifier)
         tableView.translatesAutoresizingMaskIntoConstraints = false
@@ -72,7 +73,7 @@ extension GeneralDayView: UITableViewDataSource {
         case 0:
             return 1
         case 1:
-            return 10
+            return 3
         default:
             return 0
         }

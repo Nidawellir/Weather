@@ -23,7 +23,7 @@ internal typealias AssetImageTypeAlias = ImageAsset.Image
 internal enum Asset {
   internal enum Colors {
     internal enum Common {
-      internal static let black = ColorAsset(name: "Colors/Common/Black")
+      internal static let black = ColorAsset(name: "Colors/Common/black")
       internal static let white = ColorAsset(name: "Colors/Common/white")
     }
     internal enum CurrenWeather {
@@ -66,6 +66,7 @@ internal enum Asset {
       }
       internal static let delimiterViewBackground = ColorAsset(name: "Colors/DailyWeather/delimiterViewBackground")
       internal static let roundedContainerViewBackground = ColorAsset(name: "Colors/DailyWeather/roundedContainerViewBackground")
+      internal static let titleColor = ColorAsset(name: "Colors/DailyWeather/titleColor")
     }
   }
   internal enum Images {

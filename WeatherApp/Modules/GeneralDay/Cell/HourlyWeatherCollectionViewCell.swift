@@ -39,12 +39,13 @@ extension HourlyWeatherCollectionViewCell {
         roundedContainerView.layer.cornerRadius = 16
         roundedContainerView.translatesAutoresizingMaskIntoConstraints = false
         
+        stackView.distribution = .equalSpacing
         stackView.alignment = .center
         stackView.axis = .vertical
         stackView.translatesAutoresizingMaskIntoConstraints = false
         
         timeLabel.text = "12:00"
-        timeLabel.textColor = Asset.Colors.Common.black.color
+        timeLabel.textColor = Asset.Colors.DailyWeather.titleColor.color
         timeLabel.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         
         weatherImageView.image = Asset.Images.Weather.Small.sun.image

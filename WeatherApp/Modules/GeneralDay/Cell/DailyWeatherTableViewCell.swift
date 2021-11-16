@@ -49,6 +49,7 @@ extension DailyWeatherTableViewCell {
     private func configureViews() {
         selectionStyle = .none
         
+        collectionViewFlowLayout.sectionInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
         collectionViewFlowLayout.scrollDirection = .horizontal
         collectionViewFlowLayout.minimumLineSpacing = 6
         collectionViewFlowLayout.minimumInteritemSpacing = 0
@@ -57,8 +58,12 @@ extension DailyWeatherTableViewCell {
         roundedContainerView.layer.cornerRadius = 16
         roundedContainerView.translatesAutoresizingMaskIntoConstraints = false
         
-        dataLabel.text = "13 августа, пт"
-        dataLabel.textColor = Asset.Colors.Common.black.color
+        let attributedString = NSMutableAttributedString()
+        
+        attributedString.append(NSAttributedString(string: "13 августа,", attributes: [.foregroundColor: Asset.Colors.Common.black.color]))
+        attributedString.append(NSAttributedString(string: " пт", attributes: [.foregroundColor: Asset.Colors.DailyWeather.titleColor.color]))
+        
+        dataLabel.attributedText = attributedString
         dataLabel.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         dataLabel.translatesAutoresizingMaskIntoConstraints = false
         
@@ -68,7 +73,7 @@ extension DailyWeatherTableViewCell {
         minTemperatureLabel.translatesAutoresizingMaskIntoConstraints = false
         
         maxTemperatureLabel.text = "29°"
-        maxTemperatureLabel.textColor = Asset.Colors.Common.black.color
+        maxTemperatureLabel.textColor = Asset.Colors.DailyWeather.titleColor.color
         maxTemperatureLabel.font = UIFont.systemFont(ofSize: 16, weight: .bold)
         maxTemperatureLabel.translatesAutoresizingMaskIntoConstraints = false
         
@@ -97,10 +102,10 @@ extension DailyWeatherTableViewCell {
         roundedContainerView.addSubview(collectionView)
         
         NSLayoutConstraint.activate([
-            roundedContainerView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            roundedContainerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 4),
             roundedContainerView.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 16),
             roundedContainerView.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -16),
-            roundedContainerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            roundedContainerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -4),
             
             dataLabel.topAnchor.constraint(equalTo: roundedContainerView.topAnchor, constant: 16),
             dataLabel.leftAnchor.constraint(equalTo: roundedContainerView.leftAnchor, constant: 20),
@@ -132,7 +137,7 @@ extension DailyWeatherTableViewCell {
 
 extension DailyWeatherTableViewCell: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        return 5
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
