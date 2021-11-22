@@ -43,6 +43,55 @@ final class CurrenWeatherTableViewCell: UITableViewCell {
     }
 }
     
+// MARK: - Public methods
+
+extension CurrenWeatherTableViewCell {
+    func set(dateTime: Double?) {
+        if let dateTime = dateTime {
+            let date = Date(timeIntervalSince1970: dateTime)
+            let dateFormatter: DateFormatter = .init()
+            
+            dateFormatter.dateFormat = "dd MMMM, E"
+            dateFormatter.locale = Locale(identifier: "ru_RU")
+            
+            let dateString = dateFormatter.string(from: date)
+            
+            titleLabel.text = "Сегодня, " + dateString
+        } else {
+            titleLabel.text = ""
+        }
+    }
+    
+    func set(temperature: Double?) {
+        if let temperature = temperature {
+            temperatureLabel.text = String(Int(temperature)) + "°"
+        } else {
+            temperatureLabel.text = "--"
+        }
+    }
+    
+    func set(feelsLike: Double?, main: Main?) {
+        if
+            let feelsLike = feelsLike,
+            let main = main
+        {
+            let weatherConditions = main.weatherConditions.capitalized
+            
+            descriptionLabel.text = weatherConditions + ", ощущается как " + String(Int(feelsLike)) + "°"
+        } else {
+            temperatureLabel.text = ""
+        }
+    }
+    
+    func set(main: Main?) {
+        if let main = main {
+            weatherImageView.image = main.largeImage
+        } else {
+            
+        }
+    }
+}
+
 // MARK: - Private methods
     
 extension CurrenWeatherTableViewCell {
@@ -59,19 +108,16 @@ extension CurrenWeatherTableViewCell {
         stackView.axis = .vertical
         stackView.translatesAutoresizingMaskIntoConstraints = false
 
-        titleLabel.text = "Сегодня, 12 августа, чт"
+        titleLabel.text = "--"
         titleLabel.textAlignment = .center
         titleLabel.textColor = Asset.Colors.Common.white.color
         titleLabel.font = UIFont.systemFont(ofSize: 14, weight: .medium)
-            
-        weatherImageView.image = Asset.Images.Weather.Large.sun.image
-            
-        temperatureLabel.text = "30°"
+
+        temperatureLabel.text = "--"
         temperatureLabel.textAlignment = .center
         temperatureLabel.textColor = Asset.Colors.Common.white.color
         temperatureLabel.font = UIFont.systemFont(ofSize: 48, weight: .medium)
             
-        descriptionLabel.text = "Ясно, ощущается как 32°"
         descriptionLabel.textAlignment = .center
         descriptionLabel.textColor = Asset.Colors.Common.white.color
         descriptionLabel.font = UIFont.systemFont(ofSize: 14, weight: .medium)
@@ -114,4 +160,3 @@ extension CurrenWeatherTableViewCell {
         ]
     }
 }
-

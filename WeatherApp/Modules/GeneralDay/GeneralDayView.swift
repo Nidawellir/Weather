@@ -11,6 +11,7 @@ final class GeneralDayView: UIView {
     
     // MARK: - Private properties
     
+    private var daylyWeather: DaylyWeather?
     private let currenWeatherTableViewCellIdentifier = "currenWeatherTableViewCellIdentifier"
     private let dailyWeatherTableViewCellIdentifier = "dailyWeatherTableViewCellIdentifier"
     
@@ -31,7 +32,17 @@ final class GeneralDayView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
 }
+
+// MARK: - Public methods
     
+extension GeneralDayView {
+    func set(daylyWeather: DaylyWeather) {
+        self.daylyWeather = daylyWeather
+        
+        tableView.reloadData()
+    }
+}
+
 // MARK: - Private methods
     
 extension GeneralDayView {
@@ -73,7 +84,7 @@ extension GeneralDayView: UITableViewDataSource {
         case 0:
             return 1
         case 1:
-            return 3
+            return daylyWeather?.daily.count ?? 0
         default:
             return 0
         }
@@ -82,9 +93,31 @@ extension GeneralDayView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         switch indexPath.section {
         case 0:
-            return tableView.dequeueReusableCell(withIdentifier: currenWeatherTableViewCellIdentifier, for: indexPath)
+            let cell = tableView.dequeueReusableCell(withIdentifier: currenWeatherTableViewCellIdentifier, for: indexPath) as! CurrenWeatherTableViewCell
+            
+            cell.set(dateTime: daylyWeather?.current.dateTime)
+            cell.set(feelsLike: daylyWeather?.current.feelsLike, main: daylyWeather?.current.weather.first?.main)
+            cell.set(temperature: daylyWeather?.current.temperature)
+            cell.set(main: daylyWeather?.current.weather.first?.main)
+            
+            return cell
         case 1:
-            return tableView.dequeueReusableCell(withIdentifier: dailyWeatherTableViewCellIdentifier, for: indexPath) as! DailyWeatherTableViewCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: dailyWeatherTableViewCellIdentifier, for: indexPath) as! DailyWeatherTableViewCell
+                        
+            cell.set(dateTime: daylyWeather?.daily[indexPath.row].dateTime)
+            cell.set(temp: daylyWeather?.daily[indexPath.row].temperature)
+            cell.set(main: daylyWeather?.daily[indexPath.row].weather.first?.main)
+            cell.set(hourly: daylyWeather?.hourly.filter { hourly in
+                guard let daylyWeather = daylyWeather else { return false }
+                
+                let calendar = Calendar.current
+                let currentDate = Date(timeIntervalSince1970: daylyWeather.daily[indexPath.row].dateTime)
+                let checkDate = Date(timeIntervalSince1970: hourly.dateTime)
+                
+                return calendar.isDate(checkDate, inSameDayAs: currentDate)
+            } ?? [])
+            
+            return cell
         default:
             return .init()
         }

@@ -31,6 +31,41 @@ final class HourlyWeatherCollectionViewCell: UICollectionViewCell {
     }
 }
 
+// MARK: - Public methods
+
+extension HourlyWeatherCollectionViewCell {
+    func set(dateTime: Double?) {
+        if let dateTime = dateTime {
+            let date = Date(timeIntervalSince1970: dateTime)
+            let dateFormatter: DateFormatter = .init()
+            
+            dateFormatter.dateFormat = "HH:mm"
+            dateFormatter.locale = Locale(identifier: "ru_RU")
+            
+            let dateString = dateFormatter.string(from: date)
+            timeLabel.text = String(dateString)
+        } else {
+            timeLabel.text = "--"
+        }
+    }
+    
+    func set(temperature: Double?) {
+        if let temperature = temperature {
+            temperatureLabel.text = String(Int(temperature)) + "°"
+        } else {
+            temperatureLabel.text = "--"
+        }
+    }
+    
+    func set(main: Main?) {
+        if let main = main {
+            weatherImageView.image = main.smallImage
+        } else {
+            
+        }
+    }
+}
+
 // MARK: - Private methods
 
 extension HourlyWeatherCollectionViewCell {

@@ -13,16 +13,16 @@ final class WeatherGatewayImp {
 }
 
 extension WeatherGatewayImp: WeatherGateway {
-    func getCurrentWeather(for cityID: String, completionHandler: @escaping (Result<CurrentWeather, NetworkingError>) -> Void) {
+    func getDaylyWeather(lat: String, lon: String, completionHandler: @escaping (Result<DaylyWeather, NetworkingError>) -> Void) {
         networking.getRequest(
-            to: "https://api.openweathermap.org/data/2.5/weather",
+            to: "https://api.openweathermap.org/data/2.5/onecall",
             with: [
-                "q": cityID,
+                "lat": lat,
+                "lon": lon,
                 "appid": "11773c489c3c2aedbb4ddb58cb38be33",
                 "units": "metric",
                 "lang": "ru"
             ],
-            completionHandler: completionHandler
-        )
+            completionHandler: completionHandler)
     }
 }

@@ -6,5 +6,5 @@
 //
 
 protocol WeatherGateway {
-    func getCurrentWeather(for cityID: String, completionHandler: @escaping (Result<CurrentWeather, NetworkingError>) -> Void)
+    func getDaylyWeather(lat: String, lon: String, completionHandler: @escaping (Result<DaylyWeather, NetworkingError>) -> Void)
 }

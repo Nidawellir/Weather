@@ -11,7 +11,7 @@ final class GeneralDayViewController: BaseViewController {
     
     // MARK: - Usecase properties
     
-    private let getCurrentWeatherUsecase = GetCurrentWeatherUsecase()
+    private let getDaylyWeatherUsecase = GetDaylyWeatherUsecase()
     
     // MARK: - Views properties
     
@@ -22,7 +22,7 @@ final class GeneralDayViewController: BaseViewController {
     override func loadView() {
         super.loadView()
         
-        title = "Томбов"
+        title = "Краснодар"
         view = generalDayView
     }
     
@@ -32,12 +32,12 @@ final class GeneralDayViewController: BaseViewController {
         setLeft(barButtonItems: [.location])
         setRight(barButtonItems: [.loader, .search])
         
-        getCurrentWeatherUsecase.execute(for: "Krasnodar") { [weak self] result in
+        getDaylyWeatherUsecase.execute(lon: "38.9769", lat: "45.0328") { [weak self] result in
             guard let self = self else { return }
             
             switch result {
-            case let .success(currentWeather):
-                self.title = String(currentWeather.main.temperature)
+            case let .success(daylyWeather):
+                self.generalDayView.set(daylyWeather: daylyWeather)
             case let .failure(error):
                 print(error)
             }
