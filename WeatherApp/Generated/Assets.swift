@@ -68,6 +68,9 @@ internal enum Asset {
       internal static let roundedContainerViewBackground = ColorAsset(name: "Colors/DailyWeather/roundedContainerViewBackground")
       internal static let titleColor = ColorAsset(name: "Colors/DailyWeather/titleColor")
     }
+    internal enum Search {
+      internal static let buttonCollor = ColorAsset(name: "Colors/Search/ButtonCollor")
+    }
   }
   internal enum Images {
     internal enum Common {

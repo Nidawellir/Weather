@@ -43,4 +43,16 @@ final class GeneralDayViewController: BaseViewController {
             }
         }
     }
+    
+    override func didTapBarButton(with barButtonItem: BarButtonItem) {
+        switch barButtonItem {
+        case .search:
+            let specificSearchViewController = SpecificSearchViewController()
+            specificSearchViewController.modalPresentationStyle = .custom
+            
+            navigationController?.present(specificSearchViewController, animated: false)
+        default:
+            break
+        }
+    }
 }
