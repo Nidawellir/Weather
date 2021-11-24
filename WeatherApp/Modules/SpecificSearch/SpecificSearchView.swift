@@ -8,11 +8,27 @@
 import UIKit
 
 protocol SpecificSearchViewDelegate: AnyObject {
+    func didChange(searchText: String)
     func didTapCancelButton()
-    func didTapConfirmButton()
+    func didTapConfirmButton(with city: City)
 }
 
 final class SpecificSearchView: UIView {
+    
+    // MARK: - Constants
+    
+    private enum Constants {
+        static let roundedViewCornerRadius: CGFloat = 24.0
+        static let buttonsStackViewSpacing: CGFloat = 8.0
+        static let buttonsCornerRadius: CGFloat = 12.0
+        static let spacingAfterSearchBar: CGFloat = 12.0
+        static let spacingCollectionView: CGFloat = 32.0
+        static let roundedViewHorizontalPadding: CGFloat = 16.0
+        static let containerStackViewPadding: CGFloat = 16.0
+        static let buttonsHeight: CGFloat = 40.0
+        static let collectionViewHeight: CGFloat = 24.0
+        static let collectionViewCellHorizontalPadding: CGFloat = 8.0
+    }
     
     // MARK: - Public properties
     
@@ -20,6 +36,7 @@ final class SpecificSearchView: UIView {
     
     // MARK: - Private properties
     
+    private var cities: [City] = []
     private let nameСitiesCollectionViewCellIdentifier = "nameСitiesCollectionViewcellIdentifier"
     
     // MARK: - Views properties
@@ -45,6 +62,7 @@ final class SpecificSearchView: UIView {
         
         configureViews()
         configureLayouts()
+        checkIsEnabledConfirmButton()
     }
     
     required init?(coder: NSCoder) {
@@ -60,6 +78,14 @@ extension SpecificSearchView {
             self?.containerView.alpha = 1
         }
     }
+    
+    func set(cities: [City]) {
+        self.cities = cities
+        
+        checkIsEnabledConfirmButton()
+        
+        collectionView.reloadData()
+    }
 }
 
 // MARK: - Private methods
@@ -67,24 +93,21 @@ extension SpecificSearchView {
 extension SpecificSearchView {
     private func configureViews() {
         containerView.alpha = 0
-        containerView.isUserInteractionEnabled = true
         containerView.translatesAutoresizingMaskIntoConstraints = false
         
         backgroundView.backgroundColor = Asset.Colors.Common.black.color
         backgroundView.alpha = 0.9
-        backgroundView.isUserInteractionEnabled = true
         backgroundView.translatesAutoresizingMaskIntoConstraints = false
         
         roundedView.backgroundColor = Asset.Colors.Common.white.color
-        roundedView.layer.cornerRadius = 24
-        roundedView.isUserInteractionEnabled = true
+        roundedView.layer.cornerRadius = Constants.roundedViewCornerRadius
         roundedView.translatesAutoresizingMaskIntoConstraints = false
         
         collectionView.backgroundColor = Asset.Colors.Common.white.color
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.dataSource = self
         collectionView.delegate = self
-        collectionView.register(NameСitiesCollectionViewCell.self, forCellWithReuseIdentifier: nameСitiesCollectionViewCellIdentifier)
+        collectionView.register(CityNameCollectionViewCell.self, forCellWithReuseIdentifier: nameСitiesCollectionViewCellIdentifier)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         
         collectionViewFlowLayout.scrollDirection = .horizontal
@@ -92,21 +115,24 @@ extension SpecificSearchView {
         containerStackView.axis = .vertical
         containerStackView.translatesAutoresizingMaskIntoConstraints = false
         
-        buttonsStackView.spacing = 9
+        buttonsStackView.spacing = Constants.buttonsStackViewSpacing
         buttonsStackView.distribution = .fillEqually
         
-        searchBar.layer.cornerRadius = 12
+        searchBar.backgroundImage = UIImage()
+        searchBar.autocapitalizationType = .none
+        searchBar.autocorrectionType = .no
+        searchBar.delegate = self
 
-        cancelButton.setTitle("Отменить", for: .normal)
-        cancelButton.layer.cornerRadius = 12
+        cancelButton.setTitle(Localizations.Common.cancel, for: .normal)
+        cancelButton.layer.cornerRadius = Constants.buttonsCornerRadius
         cancelButton.backgroundColor = Asset.Colors.Search.buttonCollor.color
         cancelButton.setTitleColor(Asset.Colors.Common.black.color, for: .normal)
         cancelButton.addTarget(self, action: #selector(didTapCancelButton), for: .touchUpInside)
         
-        confirmButton.setTitle("Подтвердить", for: .normal)
-        confirmButton.layer.cornerRadius = 12
-        confirmButton.backgroundColor = Asset.Colors.Search.buttonCollor.color
-        confirmButton.setTitleColor(Asset.Colors.Common.black.color, for: .normal)
+        confirmButton.setTitle(Localizations.Common.confirm, for: .normal)
+        confirmButton.layer.cornerRadius = Constants.buttonsCornerRadius
+        confirmButton.backgroundColor = Asset.Colors.Common.blue.color
+        confirmButton.setTitleColor(Asset.Colors.Common.white.color, for: .normal)
         confirmButton.addTarget(self, action: #selector(didTapConfirmButton), for: .touchUpInside)
     }
 
@@ -120,10 +146,10 @@ extension SpecificSearchView {
         roundedView.addSubview(containerStackView)
         
         containerStackView.addArrangedSubview(searchBar)
-        containerStackView.setCustomSpacing(12, after: searchBar)
+        containerStackView.setCustomSpacing(Constants.spacingAfterSearchBar, after: searchBar)
         
         containerStackView.addArrangedSubview(collectionView)
-        containerStackView.setCustomSpacing(32, after: collectionView)
+        containerStackView.setCustomSpacing(Constants.spacingCollectionView, after: collectionView)
         
         containerStackView.addArrangedSubview(buttonsStackView)
         
@@ -142,20 +168,27 @@ extension SpecificSearchView {
             backgroundView.rightAnchor.constraint(equalTo: rightAnchor),
             
             roundedView.centerYAnchor.constraint(equalTo: centerYAnchor),
-            roundedView.leftAnchor.constraint(equalTo: leftAnchor, constant: 16),
-            roundedView.rightAnchor.constraint(equalTo: rightAnchor, constant: -16),
+            roundedView.leftAnchor.constraint(equalTo: leftAnchor, constant: Constants.roundedViewHorizontalPadding),
+            roundedView.rightAnchor.constraint(equalTo: rightAnchor, constant: -Constants.roundedViewHorizontalPadding),
             
-            containerStackView.topAnchor.constraint(equalTo: roundedView.topAnchor, constant: 16),
-            containerStackView.bottomAnchor.constraint(equalTo: roundedView.bottomAnchor, constant: -16),
-            containerStackView.leftAnchor.constraint(equalTo: roundedView.leftAnchor, constant: 16),
-            containerStackView.rightAnchor.constraint(equalTo: roundedView.rightAnchor, constant: -16),
+            containerStackView.topAnchor.constraint(equalTo: roundedView.topAnchor, constant: Constants.containerStackViewPadding),
+            containerStackView.bottomAnchor.constraint(equalTo: roundedView.bottomAnchor, constant: -Constants.containerStackViewPadding),
+            containerStackView.leftAnchor.constraint(equalTo: roundedView.leftAnchor, constant: Constants.containerStackViewPadding),
+            containerStackView.rightAnchor.constraint(equalTo: roundedView.rightAnchor, constant: -Constants.containerStackViewPadding),
             
-            collectionView.heightAnchor.constraint(equalToConstant: 24),
+            collectionView.heightAnchor.constraint(equalToConstant: Constants.collectionViewHeight),
             
-            cancelButton.heightAnchor.constraint(equalToConstant: 40),
+            cancelButton.heightAnchor.constraint(equalToConstant: Constants.buttonsHeight),
             
-            confirmButton.heightAnchor.constraint(equalToConstant: 40)
+            confirmButton.heightAnchor.constraint(equalToConstant: Constants.buttonsHeight)
         ])
+    }
+    
+    private func checkIsEnabledConfirmButton() {
+        let firstCities = cities.first
+                
+        confirmButton.isEnabled = searchBar.text?.count == firstCities?.name.count
+        confirmButton.alpha = searchBar.text?.count == firstCities?.name.count ? 1 : 0.8
     }
     
     @objc func didTapCancelButton() {
@@ -167,7 +200,13 @@ extension SpecificSearchView {
     }
 
     @objc func didTapConfirmButton() {
-        delegate?.didTapConfirmButton()
+        guard let city = cities.first else { return }
+        
+        UIView.animate(withDuration: 0.33, delay: 0, options: .curveEaseInOut, animations: { [weak self] in
+            self?.containerView.alpha = 0
+        }, completion: { [weak self] _ in
+            self?.delegate?.didTapConfirmButton(with: city)
+        })
     }
 }
 
@@ -175,11 +214,13 @@ extension SpecificSearchView {
 
 extension SpecificSearchView: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 5
+        return cities.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: nameСitiesCollectionViewCellIdentifier, for: indexPath) as! NameСitiesCollectionViewCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: nameСitiesCollectionViewCellIdentifier, for: indexPath) as! CityNameCollectionViewCell
+        
+        cell.set(cityName: cities[indexPath.row].name)
         
         return cell
     }
@@ -189,10 +230,25 @@ extension SpecificSearchView: UICollectionViewDataSource {
 
 extension SpecificSearchView: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print(indexPath)
+        let name = cities[indexPath.row].name
+        
+        searchBar.text = name
+        
+        delegate?.didChange(searchText: name)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 67, height: 24)
+        let width = (cities[indexPath.row].name as NSString).size(withAttributes: [.font: UIFont.systemFont(ofSize: 14, weight: .medium)]).width + 2 * Constants.collectionViewCellHorizontalPadding
+        let height: CGFloat = Constants.collectionViewHeight
+        
+        return CGSize(width: width, height: height)
+    }
+}
+
+// MARK: - UISearchBarDelegate
+
+extension SpecificSearchView: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        delegate?.didChange(searchText: searchText)
     }
 }

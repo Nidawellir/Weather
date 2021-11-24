@@ -9,17 +9,30 @@ import UIKit
 
 final class CurrenWeatherTableViewCell: UITableViewCell {
     
+    // MARK: - Constants
+    
+    private enum Constants {
+        static let roundedContainerViewCornerRadius: CGFloat = 24.0
+        static let roundedContainerViewBottomPadding: CGFloat = 16.0
+        static let roundedContainerViewHorizontalPadding: CGFloat = 16.0
+        static let stackViewTopPadding: CGFloat = 16.0
+        static let stackViewBottomPadding: CGFloat = 24.0
+    }
+    
     // MARK: - Views properties
     
-    private let roundedContainereView = UIView()
+    private let roundedContainerView = UIView()
     private let gradientView = UIView()
     private let gradientlayer = CAGradientLayer()
+    private let circleGradientImageView: UIImageView = .init(image: Asset.Images.Common.circleGradient.image)
     private let stackView = UIStackView()
     private let titleLabel = UILabel()
     private let weatherImageView = UIImageView()
     private let temperatureLabel = UILabel()
     private let descriptionLabel = UILabel()
 
+    private var circleGradientImageViewHeightConstraint: NSLayoutConstraint?
+    
     // MARK: - Initialization
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -39,7 +52,8 @@ final class CurrenWeatherTableViewCell: UITableViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
                 
-        gradientlayer.frame = roundedContainereView.bounds
+        gradientlayer.frame = roundedContainerView.bounds
+        circleGradientImageViewHeightConstraint?.constant = roundedContainerView.frame.height * 0.6
     }
 }
     
@@ -56,17 +70,17 @@ extension CurrenWeatherTableViewCell {
             
             let dateString = dateFormatter.string(from: date)
             
-            titleLabel.text = "Сегодня, " + dateString
+            titleLabel.text = Localizations.Common.today + Localizations.Common.comma + Localizations.Common.space + dateString
         } else {
-            titleLabel.text = ""
+            titleLabel.text = Localizations.Common.empty
         }
     }
     
     func set(temperature: Double?) {
         if let temperature = temperature {
-            temperatureLabel.text = String(Int(temperature)) + "°"
+            temperatureLabel.text = String(Int(temperature)) + Localizations.Common.celsius
         } else {
-            temperatureLabel.text = "--"
+            temperatureLabel.text = Localizations.Common.empty
         }
     }
     
@@ -77,9 +91,15 @@ extension CurrenWeatherTableViewCell {
         {
             let weatherConditions = main.weatherConditions.capitalized
             
-            descriptionLabel.text = weatherConditions + ", ощущается как " + String(Int(feelsLike)) + "°"
+            descriptionLabel.text = weatherConditions
+                + Localizations.Common.comma
+                + Localizations.Common.space
+                + Localizations.CurrenWeatherTableViewCell.feelsLike
+                + Localizations.Common.space
+                + String(Int(feelsLike))
+                + Localizations.Common.celsius
         } else {
-            temperatureLabel.text = ""
+            descriptionLabel.text = Localizations.Common.empty
         }
     }
     
@@ -87,7 +107,7 @@ extension CurrenWeatherTableViewCell {
         if let main = main {
             weatherImageView.image = main.largeImage
         } else {
-            
+            weatherImageView.image = Asset.Images.Weather.Large.sun.image
         }
     }
 }
@@ -98,57 +118,70 @@ extension CurrenWeatherTableViewCell {
     private func configureViews() {
         backgroundColor = Asset.Colors.Common.white.color
         
-        roundedContainereView.clipsToBounds = true
-        roundedContainereView.layer.cornerRadius = 24
-        roundedContainereView.translatesAutoresizingMaskIntoConstraints = false
+        roundedContainerView.clipsToBounds = true
+        roundedContainerView.layer.cornerRadius = Constants.roundedContainerViewCornerRadius
+        roundedContainerView.translatesAutoresizingMaskIntoConstraints = false
 
         gradientView.translatesAutoresizingMaskIntoConstraints = false
                 
+        circleGradientImageView.translatesAutoresizingMaskIntoConstraints = false
+        
         stackView.alignment = .center
         stackView.axis = .vertical
         stackView.translatesAutoresizingMaskIntoConstraints = false
 
-        titleLabel.text = "--"
+        titleLabel.text = Localizations.Common.empty
         titleLabel.textAlignment = .center
         titleLabel.textColor = Asset.Colors.Common.white.color
         titleLabel.font = UIFont.systemFont(ofSize: 14, weight: .medium)
 
-        temperatureLabel.text = "--"
+        weatherImageView.image = Asset.Images.Weather.Large.sun.image
+        
+        temperatureLabel.text = Localizations.Common.empty
         temperatureLabel.textAlignment = .center
         temperatureLabel.textColor = Asset.Colors.Common.white.color
         temperatureLabel.font = UIFont.systemFont(ofSize: 48, weight: .medium)
             
+        descriptionLabel.text = Localizations.Common.empty
         descriptionLabel.textAlignment = .center
         descriptionLabel.textColor = Asset.Colors.Common.white.color
         descriptionLabel.font = UIFont.systemFont(ofSize: 14, weight: .medium)
     }
     
     private func configureLayouts() {
-        addSubview(roundedContainereView)
+        addSubview(roundedContainerView)
     
-        roundedContainereView.addSubview(gradientView)
-        roundedContainereView.addSubview(stackView)
+        roundedContainerView.addSubview(gradientView)
+        roundedContainerView.addSubview(circleGradientImageView)
+        roundedContainerView.addSubview(stackView)
         
         stackView.addArrangedSubview(titleLabel)
         stackView.addArrangedSubview(weatherImageView)
         stackView.addArrangedSubview(temperatureLabel)
         stackView.addArrangedSubview(descriptionLabel)
             
+        circleGradientImageViewHeightConstraint = circleGradientImageView.heightAnchor.constraint(equalToConstant: 0.0)
+        circleGradientImageViewHeightConstraint?.isActive = true
+        
         NSLayoutConstraint.activate([
-            roundedContainereView.topAnchor.constraint(equalTo: topAnchor),
-            roundedContainereView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -16),
-            roundedContainereView.leftAnchor.constraint(equalTo: leftAnchor, constant: 16),
-            roundedContainereView.rightAnchor.constraint(equalTo: rightAnchor, constant: -16),
+            roundedContainerView.topAnchor.constraint(equalTo: topAnchor),
+            roundedContainerView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -Constants.roundedContainerViewBottomPadding),
+            roundedContainerView.leftAnchor.constraint(equalTo: leftAnchor, constant: Constants.roundedContainerViewHorizontalPadding),
+            roundedContainerView.rightAnchor.constraint(equalTo: rightAnchor, constant: -Constants.roundedContainerViewHorizontalPadding),
             
-            gradientView.topAnchor.constraint(equalTo: roundedContainereView.topAnchor),
-            gradientView.bottomAnchor.constraint(equalTo: roundedContainereView.bottomAnchor),
-            gradientView.leftAnchor.constraint(equalTo: roundedContainereView.leftAnchor),
-            gradientView.rightAnchor.constraint(equalTo: roundedContainereView.rightAnchor),
+            gradientView.topAnchor.constraint(equalTo: roundedContainerView.topAnchor),
+            gradientView.bottomAnchor.constraint(equalTo: roundedContainerView.bottomAnchor),
+            gradientView.leftAnchor.constraint(equalTo: roundedContainerView.leftAnchor),
+            gradientView.rightAnchor.constraint(equalTo: roundedContainerView.rightAnchor),
             
-            stackView.topAnchor.constraint(equalTo: roundedContainereView.topAnchor, constant: 16),
-            stackView.bottomAnchor.constraint(equalTo: roundedContainereView.bottomAnchor, constant: -24),
-            stackView.leftAnchor.constraint(equalTo: roundedContainereView.leftAnchor),
-            stackView.rightAnchor.constraint(equalTo: roundedContainereView.rightAnchor)
+            circleGradientImageView.leftAnchor.constraint(equalTo: roundedContainerView.leftAnchor),
+            circleGradientImageView.rightAnchor.constraint(equalTo: roundedContainerView.rightAnchor),
+            circleGradientImageView.bottomAnchor.constraint(equalTo: roundedContainerView.bottomAnchor),
+            
+            stackView.topAnchor.constraint(equalTo: roundedContainerView.topAnchor, constant: Constants.stackViewTopPadding),
+            stackView.bottomAnchor.constraint(equalTo: roundedContainerView.bottomAnchor, constant: -Constants.stackViewBottomPadding),
+            stackView.leftAnchor.constraint(equalTo: roundedContainerView.leftAnchor),
+            stackView.rightAnchor.constraint(equalTo: roundedContainerView.rightAnchor)
         ])
     }
     

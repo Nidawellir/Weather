@@ -9,6 +9,10 @@ import UIKit
 
 final class GeneralDayViewController: BaseViewController {
     
+    // MARK: - Private properties
+
+    private var city = City(coordinate: Coordinate(lat: "52.71667", lon: "41.43333"), name: "Тамбов") // Поставил Тамбов базовым значением, что бы первые данные были получены
+    
     // MARK: - Usecase properties
     
     private let getDaylyWeatherUsecase = GetDaylyWeatherUsecase()
@@ -22,17 +26,37 @@ final class GeneralDayViewController: BaseViewController {
     override func loadView() {
         super.loadView()
         
-        title = "Краснодар"
         view = generalDayView
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
     
-        setLeft(barButtonItems: [.location])
-        setRight(barButtonItems: [.loader, .search])
+        setRight(barButtonItems: [.search])
+        getDaylyWeather()
+    }
+    
+    override func didTapBarButton(with barButtonItem: BarButtonItem) {
+        switch barButtonItem {
+        case .search:
+            let specificSearchViewController = SpecificSearchViewController()
+            specificSearchViewController.set(confirmClosure: updateCity)
+            specificSearchViewController.modalPresentationStyle = .custom
+            
+            navigationController?.present(specificSearchViewController, animated: false)
+        default:
+            break
+        }
+    }
+}
+
+extension GeneralDayViewController {
+    private func getDaylyWeather() {
+//        guard let city = city else { return } // Верну если базовый город не будет указан по умолчанию
         
-        getDaylyWeatherUsecase.execute(lon: "38.9769", lat: "45.0328") { [weak self] result in
+        title = city.name
+        
+        getDaylyWeatherUsecase.execute(lon: city.coordinate.lon, lat: city.coordinate.lat) { [weak self] result in
             guard let self = self else { return }
             
             switch result {
@@ -44,15 +68,9 @@ final class GeneralDayViewController: BaseViewController {
         }
     }
     
-    override func didTapBarButton(with barButtonItem: BarButtonItem) {
-        switch barButtonItem {
-        case .search:
-            let specificSearchViewController = SpecificSearchViewController()
-            specificSearchViewController.modalPresentationStyle = .custom
-            
-            navigationController?.present(specificSearchViewController, animated: false)
-        default:
-            break
-        }
+    private func updateCity(on city: City) {
+        self.city = city
+        
+        getDaylyWeather()
     }
 }

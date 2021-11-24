@@ -1,0 +1,17 @@
+"Common.cancel" = "Отменить";
+"Common.confirm" = "Подтвердить";
+"Common.today" = "Сегодня";
+"Common.comma" = ",";
+"Common.space" = " ";
+"Common.empty" = "";
+"Common.celsius" = "°";
+
+"WeatherConditions.clear" = "ясно";
+"WeatherConditions.clouds" = "облачно";
+"WeatherConditions.snow" = "снег";
+"WeatherConditions.atmosphere" = "атмосферные явления";
+"WeatherConditions.rain" = "дождь";
+"WeatherConditions.drizzle" = "морось";
+"WeatherConditions.thunderstorm" = "гроза";
+
+"CurrenWeatherTableViewCell.feelsLike" = "ощущается как";

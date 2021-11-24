@@ -9,6 +9,13 @@ import UIKit
 
 final class HourlyWeatherCollectionViewCell: UICollectionViewCell {
     
+    // MARK: - Constants
+    
+    private enum Constants {
+        static let roundedContainerViewCornerRadius: CGFloat = 16.0
+        static let stackViewVerticalPadding: CGFloat = 12.0
+    }
+    
     // MARK: - Views properties
     
     private let roundedContainerView = UIView()
@@ -43,17 +50,17 @@ extension HourlyWeatherCollectionViewCell {
             dateFormatter.locale = Locale(identifier: "ru_RU")
             
             let dateString = dateFormatter.string(from: date)
-            timeLabel.text = String(dateString)
+            timeLabel.text = dateString
         } else {
-            timeLabel.text = "--"
+            timeLabel.text = Localizations.Common.empty
         }
     }
     
     func set(temperature: Double?) {
         if let temperature = temperature {
-            temperatureLabel.text = String(Int(temperature)) + "°"
+            temperatureLabel.text = String(Int(temperature)) + Localizations.Common.celsius
         } else {
-            temperatureLabel.text = "--"
+            temperatureLabel.text = Localizations.Common.empty
         }
     }
     
@@ -61,7 +68,7 @@ extension HourlyWeatherCollectionViewCell {
         if let main = main {
             weatherImageView.image = main.smallImage
         } else {
-            
+            weatherImageView.image = nil
         }
     }
 }
@@ -71,7 +78,7 @@ extension HourlyWeatherCollectionViewCell {
 extension HourlyWeatherCollectionViewCell {
     private func configureViews() {
         roundedContainerView.backgroundColor = Asset.Colors.DailyWeather.HourlyWeather.roundedContainerViewBackground.color
-        roundedContainerView.layer.cornerRadius = 16
+        roundedContainerView.layer.cornerRadius = Constants.roundedContainerViewCornerRadius
         roundedContainerView.translatesAutoresizingMaskIntoConstraints = false
         
         stackView.distribution = .equalSpacing
@@ -79,13 +86,9 @@ extension HourlyWeatherCollectionViewCell {
         stackView.axis = .vertical
         stackView.translatesAutoresizingMaskIntoConstraints = false
         
-        timeLabel.text = "12:00"
         timeLabel.textColor = Asset.Colors.DailyWeather.titleColor.color
         timeLabel.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         
-        weatherImageView.image = Asset.Images.Weather.Small.sun.image
-        
-        temperatureLabel.text = "25°"
         temperatureLabel.textColor = Asset.Colors.Common.black.color
         temperatureLabel.font = UIFont.systemFont(ofSize: 16, weight: .bold)
     }
@@ -105,10 +108,10 @@ extension HourlyWeatherCollectionViewCell {
             roundedContainerView.leftAnchor.constraint(equalTo: contentView.leftAnchor),
             roundedContainerView.rightAnchor.constraint(equalTo: contentView.rightAnchor),
             
-            stackView.topAnchor.constraint(equalTo: roundedContainerView.topAnchor, constant: 12),
-            stackView.bottomAnchor.constraint(equalTo: roundedContainerView.bottomAnchor, constant: -12),
-            stackView.leftAnchor.constraint(equalTo: roundedContainerView.leftAnchor, constant: 0),
-            stackView.rightAnchor.constraint(equalTo: roundedContainerView.rightAnchor, constant: 0)
+            stackView.topAnchor.constraint(equalTo: roundedContainerView.topAnchor, constant: Constants.stackViewVerticalPadding),
+            stackView.bottomAnchor.constraint(equalTo: roundedContainerView.bottomAnchor, constant: -Constants.stackViewVerticalPadding),
+            stackView.leftAnchor.constraint(equalTo: roundedContainerView.leftAnchor),
+            stackView.rightAnchor.constraint(equalTo: roundedContainerView.rightAnchor)
         ])
     }
 }

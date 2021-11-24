@@ -7,13 +7,6 @@
 
 import Foundation
 
-enum NetworkingError: Error {
-    case failedToCreateURLComponents
-    case failedToCreateURL
-    case failedToDecode
-    case networkError
-}
-
 final class NetworkingImp {
     
     // MARK: - Static properties

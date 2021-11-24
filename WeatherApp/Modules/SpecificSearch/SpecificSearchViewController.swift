@@ -9,7 +9,13 @@ import UIKit
 
 final class SpecificSearchViewController: UIViewController {
     
+    // MARK: - Private properties
+    
+    private var confirmClosure: ((City) -> Void)?
+    
     // MARK: - Usecase properties
+    
+    private let searchCityBySearchTextUsecase = SearchCityBySearchTextUsecase()
     
     // MARK: - Views properties
     
@@ -36,14 +42,28 @@ final class SpecificSearchViewController: UIViewController {
     }
 }
 
+// MARK: - Public methods
+
+extension SpecificSearchViewController {
+    func set(confirmClosure: @escaping (City) -> Void) {
+        self.confirmClosure = confirmClosure
+    }
+}
+
 // MARK: - SpecificSearchViewDelegate
 
 extension SpecificSearchViewController: SpecificSearchViewDelegate {
+    func didChange(searchText: String) {
+        specificSearchView.set(cities: searchCityBySearchTextUsecase.execute(searchText: searchText))
+    }
+    
     func didTapCancelButton() {
         dismiss(animated: false)
     }
     
-    func didTapConfirmButton() {
+    func didTapConfirmButton(with city: City) {
+        dismiss(animated: false)
         
+        confirmClosure?(city)
     }
 }

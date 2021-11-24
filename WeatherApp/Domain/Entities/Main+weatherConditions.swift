@@ -11,19 +11,19 @@ extension Main {
     var weatherConditions: String {
         switch self {
         case .clear:
-            return "ясно"
+            return Localizations.WeatherConditions.clear
         case .clouds:
-            return "облачно"
+            return Localizations.WeatherConditions.clouds
         case .snow:
-            return "снег"
+            return Localizations.WeatherConditions.snow
         case .atmosphere:
-            return "атмосферные явления"
+            return Localizations.WeatherConditions.atmosphere
         case .rain:
-            return "дождь"
+            return Localizations.WeatherConditions.rain
         case .drizzle:
-            return "морось"
+            return Localizations.WeatherConditions.drizzle
         case .thunderstorm:
-            return "гроза"
+            return Localizations.WeatherConditions.thunderstorm
         }
     }
 }

@@ -70,6 +70,18 @@ extension GeneralDayView {
             tableView.rightAnchor.constraint(equalTo: rightAnchor)
         ])
     }
+    
+    private func getHourlyWithSameDay(by indexPath: IndexPath) -> [Hourly] {
+        daylyWeather?.hourly.filter { hourly in
+            guard let daylyWeather = daylyWeather else { return false }
+            
+            let calendar = Calendar.current
+            let currentDate = Date(timeIntervalSince1970: daylyWeather.daily[indexPath.row].dateTime)
+            let checkDate = Date(timeIntervalSince1970: hourly.dateTime)
+            
+            return calendar.isDate(checkDate, inSameDayAs: currentDate)
+        } ?? []
+    }
 }
 
 // MARK: - UITableViewDataSource
@@ -107,15 +119,7 @@ extension GeneralDayView: UITableViewDataSource {
             cell.set(dateTime: daylyWeather?.daily[indexPath.row].dateTime)
             cell.set(temp: daylyWeather?.daily[indexPath.row].temperature)
             cell.set(main: daylyWeather?.daily[indexPath.row].weather.first?.main)
-            cell.set(hourly: daylyWeather?.hourly.filter { hourly in
-                guard let daylyWeather = daylyWeather else { return false }
-                
-                let calendar = Calendar.current
-                let currentDate = Date(timeIntervalSince1970: daylyWeather.daily[indexPath.row].dateTime)
-                let checkDate = Date(timeIntervalSince1970: hourly.dateTime)
-                
-                return calendar.isDate(checkDate, inSameDayAs: currentDate)
-            } ?? [])
+            cell.set(hourly: getHourlyWithSameDay(by: indexPath))
             
             return cell
         default:

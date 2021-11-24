@@ -12,6 +12,8 @@ final class WeatherGatewayImp {
     private let networking: Networking = NetworkingImp.shared
 }
 
+// MARK: - Public methods
+
 extension WeatherGatewayImp: WeatherGateway {
     func getDaylyWeather(lat: String, lon: String, completionHandler: @escaping (Result<DaylyWeather, NetworkingError>) -> Void) {
         networking.getRequest(

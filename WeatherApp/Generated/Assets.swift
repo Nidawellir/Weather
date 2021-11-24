@@ -24,6 +24,7 @@ internal enum Asset {
   internal enum Colors {
     internal enum Common {
       internal static let black = ColorAsset(name: "Colors/Common/Black")
+      internal static let blue = ColorAsset(name: "Colors/Common/Blue")
       internal static let white = ColorAsset(name: "Colors/Common/white")
     }
     internal enum CurrenWeather {
@@ -76,6 +77,7 @@ internal enum Asset {
     internal enum Common {
       internal static let search = ImageAsset(name: "Images/Common/Search")
       internal static let back = ImageAsset(name: "Images/Common/back")
+      internal static let circleGradient = ImageAsset(name: "Images/Common/circleGradient")
       internal static let loader = ImageAsset(name: "Images/Common/loader")
       internal static let location = ImageAsset(name: "Images/Common/location")
     }

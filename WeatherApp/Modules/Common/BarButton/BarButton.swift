@@ -8,7 +8,12 @@
 import UIKit
 
 final class BarButton: UIButton {
+    
+    // MARK: - Public properties
+    
     let barButtonItem: BarButtonItem
+    
+    // MARK: - Initialization
     
     init(barButtonItem: BarButtonItem) {
         self.barButtonItem = barButtonItem

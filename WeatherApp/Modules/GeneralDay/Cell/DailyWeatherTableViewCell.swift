@@ -9,6 +9,29 @@ import UIKit
 
 final class DailyWeatherTableViewCell: UITableViewCell {
     
+    // MARK: - Constants
+    
+    private enum Constants {
+        static let collectionViewVerticalInset: CGFloat = 0.0
+        static let collectionViewHorizontalInset: CGFloat = 20.0
+        static let collectionViewMinimumLineSpacing: CGFloat = 6.0
+        static let collectionViewMinimumInteritemSpacing: CGFloat = 0
+        static let roundedContainerViewCornerRadius: CGFloat = 16.0
+        static let roundedContainerViewVerticalPadding: CGFloat = 4.0
+        static let roundedContainerViewHorizontalPadding: CGFloat = 4.0
+        static let dateLabelTopPadding: CGFloat = 16.0
+        static let dateLabelLeftPadding: CGFloat = 20.0
+        static let weatherImageViewRightPadding: CGFloat = 20.0
+        static let maxTemperatureLabelRightPadding: CGFloat = 16.0
+        static let minTemperatureLabelLeftPadding: CGFloat = 16.0
+        static let delimiterViewTopPadding: CGFloat = 16.0
+        static let delimiterViewHorizontalPadding: CGFloat = 20.0
+        static let delimiterViewHeight: CGFloat = 1.0
+        static let collectionViewVerticalSpacing: CGFloat = 16.0
+        static let collectionViewWidth: CGFloat = 73.0
+        static let collectionViewHeight: CGFloat = 114.0
+    }
+    
     // MARK: - Private properties
     
     private var hourly: [Hourly] = []
@@ -24,7 +47,11 @@ final class DailyWeatherTableViewCell: UITableViewCell {
     private let delimiterView = UIView()
     private let collectionViewFlowLayout: UICollectionViewFlowLayout
     private let collectionView: UICollectionView
-        
+    
+    private var delimiterViewTopConstraint: NSLayoutConstraint?
+    private var collectionViewTopConstraint: NSLayoutConstraint?
+    private var collectionViewHeightConstraint: NSLayoutConstraint?
+    
     // MARK: - Initialization
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -57,27 +84,28 @@ extension DailyWeatherTableViewCell {
             
             let dateString = dateFormatter.string(from: date)
             
-            dateFormatter.dateFormat = "E"
+            dateFormatter.dateFormat = " E"
             
             let dayString = dateFormatter.string(from: date)
             
             let attributedString = NSMutableAttributedString()
             
             attributedString.append(NSAttributedString(string: dateString, attributes: [.foregroundColor: Asset.Colors.Common.black.color]))
-            attributedString.append(NSAttributedString(string: " \(dayString)", attributes: [.foregroundColor: Asset.Colors.DailyWeather.titleColor.color]))
+            attributedString.append(NSAttributedString(string: dayString, attributes: [.foregroundColor: Asset.Colors.DailyWeather.titleColor.color]))
             
             dateLabel.attributedText = attributedString
         } else {
-            dateLabel.text = ""
+            dateLabel.text = Localizations.Common.empty
         }
     }
     
     func set(temp: Temp?) {
         if let temp = temp {
-            maxTemperatureLabel.text = String(Int(temp.max))
-            minTemperatureLabel.text = String(Int(temp.min))
+            maxTemperatureLabel.text = String(Int(temp.max)) + Localizations.Common.celsius
+            minTemperatureLabel.text = String(Int(temp.min)) + Localizations.Common.celsius
         } else {
-            
+            maxTemperatureLabel.text = Localizations.Common.empty
+            minTemperatureLabel.text = Localizations.Common.empty
         }
     }
     
@@ -85,7 +113,7 @@ extension DailyWeatherTableViewCell {
         if let main = main {
             weatherImageView.image = main.smallImage
         } else {
-            
+            weatherImageView.image = nil
         }
     }
     
@@ -93,6 +121,12 @@ extension DailyWeatherTableViewCell {
         self.hourly = hourly
         
         collectionView.reloadData()
+        
+        delimiterViewTopConstraint?.constant = hourly.isEmpty ? 0 : Constants.delimiterViewTopPadding
+        collectionViewTopConstraint?.constant = hourly.isEmpty ? 0 : Constants.collectionViewVerticalSpacing
+        collectionViewHeightConstraint?.constant = hourly.isEmpty ? 0 : Constants.collectionViewHeight
+        
+        delimiterView.isHidden = hourly.isEmpty
     }
 }
 
@@ -102,30 +136,31 @@ extension DailyWeatherTableViewCell {
     private func configureViews() {
         selectionStyle = .none
         
-        collectionViewFlowLayout.sectionInset = UIEdgeInsets(top: 0, left: 20, bottom: 0, right: 20)
+        collectionViewFlowLayout.sectionInset = UIEdgeInsets(
+            top: Constants.collectionViewVerticalInset,
+            left: Constants.collectionViewHorizontalInset,
+            bottom: Constants.collectionViewVerticalInset,
+            right: Constants.collectionViewHorizontalInset
+        )
         collectionViewFlowLayout.scrollDirection = .horizontal
-        collectionViewFlowLayout.minimumLineSpacing = 6
-        collectionViewFlowLayout.minimumInteritemSpacing = 0
+        collectionViewFlowLayout.minimumLineSpacing = Constants.collectionViewMinimumLineSpacing
+        collectionViewFlowLayout.minimumInteritemSpacing = Constants.collectionViewMinimumInteritemSpacing
         
         roundedContainerView.backgroundColor = Asset.Colors.DailyWeather.roundedContainerViewBackground.color
-        roundedContainerView.layer.cornerRadius = 16
+        roundedContainerView.layer.cornerRadius = Constants.roundedContainerViewCornerRadius
         roundedContainerView.translatesAutoresizingMaskIntoConstraints = false
         
-        dateLabel.text = "--"
         dateLabel.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        minTemperatureLabel.text = "25°"
         minTemperatureLabel.textColor = Asset.Colors.Common.black.color
         minTemperatureLabel.font = UIFont.systemFont(ofSize: 16, weight: .bold)
         minTemperatureLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        maxTemperatureLabel.text = "29°"
         maxTemperatureLabel.textColor = Asset.Colors.DailyWeather.titleColor.color
         maxTemperatureLabel.font = UIFont.systemFont(ofSize: 16, weight: .bold)
         maxTemperatureLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        weatherImageView.image = Asset.Images.Weather.Small.sun.image
         weatherImageView.translatesAutoresizingMaskIntoConstraints = false
             
         delimiterView.backgroundColor = Asset.Colors.DailyWeather.delimiterViewBackground.color
@@ -149,34 +184,40 @@ extension DailyWeatherTableViewCell {
         roundedContainerView.addSubview(delimiterView)
         roundedContainerView.addSubview(collectionView)
         
+        delimiterViewTopConstraint = delimiterView.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: Constants.delimiterViewTopPadding)
+        delimiterViewTopConstraint?.isActive = true
+        
+        collectionViewTopConstraint = collectionView.topAnchor.constraint(equalTo: delimiterView.bottomAnchor, constant: Constants.collectionViewVerticalSpacing)
+        collectionViewTopConstraint?.isActive = true
+        
+        collectionViewHeightConstraint = collectionView.heightAnchor.constraint(equalToConstant: Constants.collectionViewHeight)
+        collectionViewHeightConstraint?.isActive = true
+        
         NSLayoutConstraint.activate([
-            roundedContainerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 4),
-            roundedContainerView.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: 16),
-            roundedContainerView.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -16),
-            roundedContainerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -4),
+            roundedContainerView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: Constants.roundedContainerViewVerticalPadding),
+            roundedContainerView.leftAnchor.constraint(equalTo: contentView.leftAnchor, constant: Constants.roundedContainerViewHorizontalPadding),
+            roundedContainerView.rightAnchor.constraint(equalTo: contentView.rightAnchor, constant: -Constants.roundedContainerViewHorizontalPadding),
+            roundedContainerView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -Constants.roundedContainerViewVerticalPadding),
             
-            dateLabel.topAnchor.constraint(equalTo: roundedContainerView.topAnchor, constant: 16),
-            dateLabel.leftAnchor.constraint(equalTo: roundedContainerView.leftAnchor, constant: 20),
+            dateLabel.topAnchor.constraint(equalTo: roundedContainerView.topAnchor, constant: Constants.dateLabelTopPadding),
+            dateLabel.leftAnchor.constraint(equalTo: roundedContainerView.leftAnchor, constant: Constants.dateLabelLeftPadding),
             
-            weatherImageView.rightAnchor.constraint(equalTo: roundedContainerView.rightAnchor, constant: -20),
+            weatherImageView.rightAnchor.constraint(equalTo: roundedContainerView.rightAnchor, constant: -Constants.weatherImageViewRightPadding),
             weatherImageView.centerYAnchor.constraint(equalTo: dateLabel.centerYAnchor),
 
-            maxTemperatureLabel.rightAnchor.constraint(equalTo: weatherImageView.leftAnchor, constant: -16),
+            maxTemperatureLabel.rightAnchor.constraint(equalTo: weatherImageView.leftAnchor, constant: -Constants.maxTemperatureLabelRightPadding),
             maxTemperatureLabel.centerYAnchor.constraint(equalTo: dateLabel.centerYAnchor),
             
-            minTemperatureLabel.rightAnchor.constraint(equalTo: maxTemperatureLabel.leftAnchor, constant: -16),
+            minTemperatureLabel.rightAnchor.constraint(equalTo: maxTemperatureLabel.leftAnchor, constant: -Constants.minTemperatureLabelLeftPadding),
             minTemperatureLabel.centerYAnchor.constraint(equalTo: dateLabel.centerYAnchor),
             
-            delimiterView.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: 16),
-            delimiterView.leftAnchor.constraint(equalTo: roundedContainerView.leftAnchor, constant: 20),
-            delimiterView.rightAnchor.constraint(equalTo: roundedContainerView.rightAnchor, constant: -20),
-            delimiterView.heightAnchor.constraint(equalToConstant: 1),
+            delimiterView.leftAnchor.constraint(equalTo: roundedContainerView.leftAnchor, constant: Constants.delimiterViewHorizontalPadding),
+            delimiterView.rightAnchor.constraint(equalTo: roundedContainerView.rightAnchor, constant: -Constants.delimiterViewHorizontalPadding),
+            delimiterView.heightAnchor.constraint(equalToConstant: Constants.delimiterViewHeight),
 
-            collectionView.topAnchor.constraint(equalTo: delimiterView.bottomAnchor, constant: 16),
-            collectionView.bottomAnchor.constraint(equalTo: roundedContainerView.bottomAnchor, constant: -16),
-            collectionView.leftAnchor.constraint(equalTo: roundedContainerView.leftAnchor, constant: 0),
-            collectionView.rightAnchor.constraint(equalTo: roundedContainerView.rightAnchor, constant: 0),
-            collectionView.heightAnchor.constraint(equalToConstant: 114)
+            collectionView.bottomAnchor.constraint(equalTo: roundedContainerView.bottomAnchor, constant: -Constants.collectionViewVerticalSpacing),
+            collectionView.leftAnchor.constraint(equalTo: roundedContainerView.leftAnchor),
+            collectionView.rightAnchor.constraint(equalTo: roundedContainerView.rightAnchor),
         ])
     }
 }
@@ -203,6 +244,6 @@ extension DailyWeatherTableViewCell: UICollectionViewDataSource {
 
 extension DailyWeatherTableViewCell: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: 73, height: 114)
+        return CGSize(width: Constants.collectionViewWidth, height: Constants.collectionViewHeight)
     }
 }
